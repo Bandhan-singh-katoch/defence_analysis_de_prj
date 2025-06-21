@@ -1,0 +1,28 @@
+/* src/index.css or src/app.css or global.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional – in case your Tailwind config doesn't define it */
+@layer utilities {
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+
+.mapboxgl-popup {
+  z-index: 9999 !important;
+}
+
+.mapboxgl-popup-content {
+  font-size: 14px;
+  line-height: 1.4;
+}
