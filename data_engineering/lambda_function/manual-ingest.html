@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit JSON to Azure Function</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            display: block;
+        }
+
+        input,
+        textarea,
+        button {
+            width: 100%;
+            font-size: 1rem;
+            padding: 12px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 250px;
+            font-family: monospace;
+        }
+
+        button {
+            background-color: #0078D7;
+            color: white;
+            border: none;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #005ea2;
+        }
+
+        pre {
+            background: #eee;
+            padding: 12px;
+            white-space: pre-wrap;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Submit JSON Array to Azure</h2>
+
+    <label for="apiUrl">🔑 API Url</label>
+    <input type="text" id="apiUrl" placeholder="Enter your API" />
+
+    <label for="apiKey">🔑 API Key</label>
+    <input type="text" id="apiKey" placeholder="Enter key" />
+
+    <label for="jsonArray">📄 JSON Array</label>
+    <textarea id="jsonArray" placeholder='[{"text": "Example article 1"}, {"text": "Example article 2"}]'></textarea>
+
+    <button onclick="sendRequest()">🚀 Submit</button>
+
+    <h3>📬 Response</h3>
+    <pre id="responseOutput">No response yet.</pre>
+
+    <script>
+        window.onload = () => {
+                const savedKey = localStorage.getItem("defence_api_key");
+                if (savedKey) {
+                    document.getElementById("apiKey").value = savedKey;
+                }
+
+                const savedApiUrl = localStorage.getItem("defence_api_url");
+                if (savedApiUrl) {
+                document.getElementById("apiUrl").value = savedApiUrl;
+            }
+            };
+
+        async function sendRequest() {
+            const apiKey = document.getElementById("apiKey").value.trim();
+            const apiUrl = document.getElementById("apiUrl").value.trim();
+            const jsonInput = document.getElementById("jsonArray").value.trim();
+            const output = document.getElementById("responseOutput");
+
+            if (!apiKey && !apiUrl) {
+                output.textContent = "❌ Error: API details is required.";
+                return;
+            }
+
+            try {
+                localStorage.setItem("defence_api_key", apiKey);
+                localStorage.setItem("defence_api_url", apiUrl);
+                const jsonArray = JSON.parse(jsonInput);
+
+                const res = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": apiKey
+                    },
+                    body: JSON.stringify(jsonArray)
+                });
+
+                const result = await res.json();
+                output.textContent = JSON.stringify(result, null, 2);
+            } catch (err) {
+                output.textContent = "❌ Error:\n" + err.message;
+            }
+        }
+    </script>
+</body>
+
+</html>
