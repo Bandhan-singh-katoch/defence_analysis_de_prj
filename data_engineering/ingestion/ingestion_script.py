@@ -19,4 +19,4 @@ df = pd.read_csv("data/filtered_dataset_20062025.csv", parse_dates=["event_date"
 # Ingest data into PostgreSQL
 df.to_sql("acled_history_events", engine, if_exists="append", index=False)
 
-print("✅ Data ingestion complete.")
+print("Data ingestion complete.")
