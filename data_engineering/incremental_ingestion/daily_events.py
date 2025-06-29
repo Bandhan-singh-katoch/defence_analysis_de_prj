@@ -112,7 +112,7 @@ def getLatestHeadlines():
                         if class_name:
                             links.append((link,title, published_time))
     except Exception as e:
-        print("Falied to get latest headlines")
+        print("Falied to get latest headlines",e)
         
     # doing because of duplicate links
     latest_entries = {}
@@ -197,7 +197,7 @@ def openrouter_data(model: str, fallback_model:str, article:str):
         )
         return completion.choices[0].message.content
     except Exception as e:
-        print("openrouter error--")
+        print("openrouter error:  ",e)
         
 
 def extract_json_from_response(response_text):
@@ -208,7 +208,7 @@ def extract_json_from_response(response_text):
             if match:
                 json_text = match.group(0)
                 return json.loads(json_text)
-        except json.JSONDecodeError as e:
+        except Exception as e:
             print("JSON Decode Error:", e)
 
 def getLatLongFromLocation(location: str):
@@ -225,8 +225,8 @@ def getLatLongFromLocation(location: str):
                 "lon": float(data[0]["lon"])
             }
 
-    except requests.exceptions.RequestException as e:
-        print(f"API Error: {e}")
+    except Exception as e:
+        print("getLatLongFromLocation error:  ",getLatLongFromLocation)
     
 
 def get_simplified_weather_condition(weather_code):
@@ -269,8 +269,8 @@ def fetch_weather(lat, lon, date):
                 "min_temp": float(data.get("temperature_2m_min", [None])[0]),
                 "weather_condition": get_simplified_weather_condition(int(data.get("weathercode", [None])[0]))
             }
-    except:
-        pass
+    except Exception as e:
+        print("fetch_weather error:  ",e)
 
     return {
         "max_temp": None,
@@ -324,6 +324,7 @@ def prepare_final_data(latestNews: list, model:str, fallback_models:list):
     
 
 def insert_data(final_data):
+    
     try:
         supabase: Client = create_client(supabase_url, supabase_key)
         for data in final_data:
@@ -334,20 +335,21 @@ def insert_data(final_data):
                     .execute()
                 )
             except Exception as e:
-                print("failed to insert for ----->", e)
+                print("failed to insert for:  ", e)
         
     except Exception as e:
-        print("Error while inserting data---")
+        print("Error while inserting data:  ",e)
 
 
 def main():
     latestNews = getLatestHeadlines()
+    print("latestNews:  ",latestNews)
     model = "mistralai/mistral-small-3.2-24b-instruct:free"
     fallback_models = ["sarvamai/sarvam-m:free","moonshotai/kimi-dev-72b:free", "deepseek/deepseek-r1-0528:free"]
     final_data = prepare_final_data(latestNews, model, fallback_models)
     
     if len(final_data) >= 1:
-        print("data to insert-------------",final_data)
+        print("data to be inserted:   ",final_data)
         insert_data(final_data)
         print("data inserted successfully--------------")
     else:
