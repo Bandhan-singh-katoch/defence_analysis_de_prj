@@ -201,14 +201,15 @@ def openrouter_data(model: str, fallback_model:str, article:str):
         
 
 def extract_json_from_response(response_text):
-    try:
-        # Step 1: Extract first {...} block from response
-        match = re.search(r'\{.*?\}', response_text, re.DOTALL)
-        if match:
-            json_text = match.group(0)
-            return json.loads(json_text)
-    except json.JSONDecodeError as e:
-        print("JSON Decode Error:", e)
+    if response_text:
+        try:
+            # Step 1: Extract first {...} block from response
+            match = re.search(r'\{.*?\}', response_text, re.DOTALL)
+            if match:
+                json_text = match.group(0)
+                return json.loads(json_text)
+        except json.JSONDecodeError as e:
+            print("JSON Decode Error:", e)
 
 def getLatLongFromLocation(location: str):
     headers = { 'User-Agent': 'MyGeocoder/1.0 (me@example.com)' }
@@ -290,6 +291,7 @@ def prepare_final_data(latestNews: list, model:str, fallback_models:list):
         if event:
             # llm_data = {'event_date': '2025-06-29', 'actor1': 'Sri Lankan Navy', 'actor2': 'Indian fishermen', 'country': 'India', 'admin1': 'Tamil Nadu', 'admin2': 'Ramanathapuram', 'location': 'Dhanushkodi', 'fatalities': 0, 'civilian_targeting': 1}
             llm_data = extract_json_from_response(openrouter_data(model,fallback_models,article))
+            print(f"llm_data for task {i}::", llm_data)
             if llm_data:
                 final_loc = ', '.join(filter(None, [llm_data['location'], llm_data['admin2'], llm_data['admin1']]))
                 coords = getLatLongFromLocation(final_loc)
@@ -322,7 +324,6 @@ def prepare_final_data(latestNews: list, model:str, fallback_models:list):
     
 
 def insert_data(final_data):
-    
     try:
         supabase: Client = create_client(supabase_url, supabase_key)
         for data in final_data:
@@ -346,8 +347,11 @@ def main():
     final_data = prepare_final_data(latestNews, model, fallback_models)
     
     if len(final_data) >= 1:
+        print("data to insert-------------",final_data)
         insert_data(final_data)
         print("data inserted successfully--------------")
+    else:
+        print("no data to insert----------")
 
 if __name__ == "__main__":
     main()
