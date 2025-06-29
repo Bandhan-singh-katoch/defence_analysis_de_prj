@@ -340,10 +340,29 @@ def insert_data(final_data):
 
 
 def main():
-    latestNews = getLatestHeadlines()
+    # latestNews = getLatestHeadlines()
     model = "mistralai/mistral-small-3.2-24b-instruct:free"
     fallback_models = ["sarvamai/sarvam-m:free","moonshotai/kimi-dev-72b:free", "deepseek/deepseek-r1-0528:free"]
-    final_data = prepare_final_data(latestNews, model, fallback_models)
+    # final_data = prepare_final_data(latestNews, model, fallback_models)
+    final_data = [{'source_url': 'https://www.thehindu.com/news/national/tamil-nadu/eight-fishermen-from-rameswaram-held-by-sri-lankan-navy-personnel-on-charges-of-poaching/article69750880.ece',
+     'source': 'The Hindu',
+     'source_scale': 'national',
+     'notes': 'Eight Indian fishermen from Rameswaram arrested by Sri Lankan Navy',
+     'event_type': 'Strategic developments',
+     'event_date': '2025-06-29',
+     'country': 'India',
+     'actor1': 'Sri Lankan Navy',
+     'actor2': 'Indian fishermen',
+     'admin1': 'Tamil Nadu',
+     'admin2': 'Ramanathapuram',
+     'location': 'Dhanushkodi',
+     'fatalities': 0,
+     'civilian_targeting': 1,
+     'latitude': 9.1778141,
+     'longitude': 79.4177555,
+     'weather_condition': None,
+     'max_temp': None,
+     'min_temp': None}]
     if len(final_data) >= 1:
         insert_data(final_data)
         print("data inserted successfully--------------")
