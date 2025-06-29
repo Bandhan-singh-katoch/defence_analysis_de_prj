@@ -1,0 +1,33 @@
+name: Daily Script Runner
+
+on:
+  schedule:
+    - cron: "30 3 * * *" 
+  workflow_dispatch: # Enable manual trigger
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Set environment variables
+        run: |
+          echo "OPENROUTER_BASE_URL=${{ secrets.OPENROUTER_BASE_URL }}" >> $GITHUB_ENV
+          echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" >> $GITHUB_ENV
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
+          echo "WEB_URL=${{ secrets.WEB_URL }}" >> $GITHUB_ENV
+
+      - name: Run Python script
+        run: python data_engineering/incremental_ingestion/daily_events.py
