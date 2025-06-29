@@ -165,7 +165,7 @@ def openrouter_data(model: str, fallback_models:list, article:str):
     prompt = """
         Extract the most recent real-world defense, military, or terrorism-related event from the article below.
         Only return if the event is directly related to India (i.e., occurred in India or involved Indian citizens as direct victims or actors). Ignore background or contextual info.
-        Only return one precise location where the event occurred (based on event action, not actor residence). Do NOT return multiple locations or use slashes.
+        Only return one precise location where the event occurred (based on event action, not actor residence). Do NOT return multiple locations or use slashes. In locations don't use any suffix like district or village just location name.
         Output in this exact JSON format:
         {
           "event_date": "YYYY-MM-DD",
@@ -227,6 +227,7 @@ def getLatLongFromLocation(location: str):
 
     except Exception as e:
         print("getLatLongFromLocation error:  ",getLatLongFromLocation)
+    return {"lat": None,"lon": None}
     
 
 def get_simplified_weather_condition(weather_code):
@@ -296,7 +297,7 @@ def prepare_final_data(latestNews: list, model:str, fallback_models:list):
                 final_loc = ', '.join(filter(None, [llm_data['location'], llm_data['admin2'], llm_data['admin1']]))
                 coords = getLatLongFromLocation(final_loc)
                 
-                weather_data = fetch_weather(coords["lat"], coords["lon"], llm_data["event_date"]) if coords else {"max_temp": None,"min_temp": None,"weather_condition": None }
+                weather_data = fetch_weather(coords["lat"], coords["lon"], llm_data["event_date"]) if coords["lat"] and coords["lon"] else {"max_temp": None,"min_temp": None,"weather_condition": None }
                 
                 article_info = {"source_url":link_det[0],
                         "source": "The Hindu",
