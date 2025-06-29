@@ -161,7 +161,7 @@ def bart_events_classifier(content: str):
         return labels[result['labels'][0]]
 
 
-def openrouter_data(model: str, fallback_model:str, article:str):
+def openrouter_data(model: str, fallback_models:list, article:str):
     prompt = """
         Extract the most recent real-world defense, military, or terrorism-related event from the article below.
         Only return if the event is directly related to India (i.e., occurred in India or involved Indian citizens as direct victims or actors). Ignore background or contextual info.
