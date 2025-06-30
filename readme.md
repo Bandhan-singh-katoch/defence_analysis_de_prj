@@ -104,3 +104,8 @@ Frontend is hosted on a modern stack (React + Mapbox) that enables:
 - Predictive modeling for conflict hotspots
 
 - RBAC and audit trail for secure access
+
+---
+
+### 🧾 License
+This project is licensed under the MIT License.
