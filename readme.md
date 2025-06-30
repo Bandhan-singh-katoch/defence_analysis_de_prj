@@ -1,12 +1,13 @@
-![Project Flow](ss/military-insights-new.png)
-
----
-
 # 🛡️ Military Insights Project
 
 An end-to-end data engineering and full-stack system designed to extract, process, and visualize defense-related events across India. This includes incidents like battles, strategic developments, explosions, and violence against civilians—based on open-source intelligence.
 
 ---
+
+![Project Flow](ss/military-insights-new.png)
+
+---
+
 
 ## 📌 Project Goals
 
