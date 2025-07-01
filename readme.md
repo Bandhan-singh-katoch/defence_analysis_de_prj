@@ -110,5 +110,13 @@ Frontend is hosted on a modern stack (React + Mapbox) that enables:
 
 ---
 
+## Useful resources
+- https://supabase.com/
+- https://www.make.com/
+- https://openrouter.ai/
+- https://mistral.ai/
+
+---
+
 ### 🧾 License
 This project is licensed under the MIT License.
